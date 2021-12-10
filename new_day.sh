@@ -1,6 +1,7 @@
 #!/bin/sh
+set -e
 
-mkdir -p $1
+mkdir $1
 cd $1
 cat > script.py <<EOF
 #!/usr/bin/python3
@@ -19,3 +20,5 @@ EOF
 
 touch input.txt
 touch sample.txt
+
+code .
