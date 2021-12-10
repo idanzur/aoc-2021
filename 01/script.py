@@ -10,7 +10,11 @@ def part1():
     
 
 def part2():
-    pass
+    with open(file) as f:
+        data = f.read()
+    numbers = [int(i) for i in data.splitlines()]
+    res = sum([1 for a, b in zip(numbers, numbers[3:]) if b > a])
+    print(f'part2: {res}')
 
 if __name__  == '__main__':
-    part1()
+    part2()
