@@ -22,9 +22,10 @@ class Grid:
         self.flashes = 0
 
     def step(self):
-        for y, row in enumerate(self.cells):
-            for x, cell in enumerate(row):
+        for row in self.cells:
+            for cell in row:
                 cell.val += 1
+
         change = True
         while change:
             change = False
@@ -36,10 +37,11 @@ class Grid:
                         cell.flashed = True
                         cell.val = 0
                         self.flashes += 1
+        self.clean()
 
     def clean(self):
-        for y, row in enumerate(self.cells):
-            for x, cell in enumerate(row):
+        for row in self.cells:
+            for cell in row:
                 cell.flashed = False    
 
     def flash(self, x, y):        
@@ -58,8 +60,7 @@ class Grid:
             res += '\n'
         return res
 
-
-def part1():
+def load_data() -> Grid:
     with open(file) as f:
         data = f.read()
     cells = []
@@ -69,28 +70,20 @@ def part1():
             t.append(Cell(val=int(n)))
         cells.append(t)
     
-    grid = Grid(cells)
-    for i in range(100):
+    return Grid(cells)
+
+def part1():
+    grid = load_data()
+    for _ in range(100):
         grid.step()
-        grid.clean()
     print(f'part1: {grid.flashes}')
 
 def part2():
-    with open(file) as f:
-        data = f.read()
-    cells = []
-    for row in data.splitlines():
-        t = []
-        for n in row:
-            t.append(Cell(val=int(n)))
-        cells.append(t)
-    
-    grid = Grid(cells)
+    grid = load_data()
     i = 0
     while True:
         i += 1
         grid.step()
-        grid.clean()
         all_zero = True
         for row in grid.cells:
             for cell in row:
@@ -103,4 +96,5 @@ def part2():
     print(f'part2: {i}')
 
 if __name__  == '__main__':
+    part1()
     part2()
