@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-from abc import abstractproperty
-from pprint import pprint
 import sys
 from collections import defaultdict
 from functools import reduce

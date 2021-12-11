@@ -75,8 +75,9 @@ def part2():
                     res += str(i)
                     break
         s += int(res)
-    print(s)
+    print(f'part2: {s}')
 
 
 if __name__  == '__main__':
+    part1()
     part2()
