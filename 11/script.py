@@ -36,11 +36,11 @@ class Grid:
                         cell.flashed = True
                         cell.val = 0
                         self.flashes += 1
+
     def clean(self):
         for y, row in enumerate(self.cells):
             for x, cell in enumerate(row):
-                cell.flashed = False
-        
+                cell.flashed = False    
 
     def flash(self, x, y):        
         for _x in range(x - 1, x + 2):
@@ -49,9 +49,6 @@ class Grid:
                     cell = self.cells[_y][_x]
                     if not cell.flashed:
                         cell.val += 1
-
-
-
 
     def __repr__(self) -> str:
         res = ""
@@ -77,8 +74,33 @@ def part1():
         grid.step()
         grid.clean()
     print(f'part1: {grid.flashes}')
+
 def part2():
-    pass
+    with open(file) as f:
+        data = f.read()
+    cells = []
+    for row in data.splitlines():
+        t = []
+        for n in row:
+            t.append(Cell(val=int(n)))
+        cells.append(t)
+    
+    grid = Grid(cells)
+    i = 0
+    while True:
+        i += 1
+        grid.step()
+        grid.clean()
+        all_zero = True
+        for row in grid.cells:
+            for cell in row:
+                if cell.val != 0:
+                    all_zero = False
+                    break
+        if all_zero:
+            break   
+        
+    print(f'part2: {i}')
 
 if __name__  == '__main__':
-    part1()
+    part2()
