@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List
+import time
 
 file = './sample.txt' if 0 else './input.txt'
 
-CROSSED_FORMAT = '\033[1m{}\033[0m'
+FLASHED_FORMAT = '\033[1m{}\033[0m'
 
 @dataclass
 class Cell:
@@ -12,7 +13,7 @@ class Cell:
     flashed: bool = False
     def __repr__(self) -> str:
         if self.flashed:
-            return CROSSED_FORMAT.format(self.val)
+            return FLASHED_FORMAT.format(self.val)
         return str(self.val)
 
 class Grid:
@@ -37,7 +38,6 @@ class Grid:
                         cell.flashed = True
                         cell.val = 0
                         self.flashes += 1
-        self.clean()
 
     def clean(self):
         for row in self.cells:
@@ -53,7 +53,7 @@ class Grid:
                         cell.val += 1
 
     def __repr__(self) -> str:
-        res = ""
+        res = ''
         for row in self.cells:
             for cell in row:
                 res += str(cell)
@@ -76,6 +76,8 @@ def part1():
     grid = load_data()
     for _ in range(100):
         grid.step()
+        print(str(grid))
+        grid.clean()
     print(f'part1: {grid.flashes}')
 
 def part2():
@@ -84,6 +86,7 @@ def part2():
     while True:
         i += 1
         grid.step()
+        grid.clean()
         all_zero = True
         for row in grid.cells:
             for cell in row:
