@@ -1,8 +1,5 @@
 #!/usr/bin/python3
-from os import name
 from typing import List
-from pprint import pprint
-from collections import defaultdict
 
 
 file = './sample.txt' if 0 else './input.txt'
@@ -33,28 +30,22 @@ def find_path(visited: List[Cave], paths=set()):
     return paths
 
 
-def is_alowed(cave: Cave, visited: List[Cave]):
-    if not cave.lower or cave.name == 'end':
-        return True
-    if cave.name == 'start':
-        return False
-    names = defaultdict(int)
-    for c in visited:
-        if c.lower:
-            names[c.name] += 1
-    if 2 in names.values():
-        return cave.name not in names
-    return True
-
-
-def find_path2(visited: List[Cave], paths=set()):
+def find_path2(visited: List[Cave], paths=set(), twice: bool = False):
     start = visited[-1]
     if start.name == 'end':
         paths.add(str(visited))
         return
     for cave in start.paths:
-        if is_alowed(cave, visited):
-            find_path2(visited + [cave], paths)
+        if cave.name == 'start':
+            continue
+        if cave.lower:
+            if twice:
+                if cave not in visited:
+                    find_path2(visited + [cave], paths, twice)
+            else:
+                find_path2(visited + [cave], paths, cave in visited)
+        else:
+            find_path2(visited + [cave], paths, twice)
     return paths
 
 
