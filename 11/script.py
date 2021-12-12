@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from dataclasses import dataclass
 from typing import List
-import time
+import numpy as np
 
 file = './sample.txt' if 0 else './input.txt'
 
@@ -20,13 +20,12 @@ class Grid:
     SIZE = 10
     def __init__(self, cells: List[List[Cell]]):
         self.cells = cells
-        self.flashes = 0
 
-    def step(self):
+    def step(self, clean=True):
         for row in self.cells:
             for cell in row:
                 cell.val += 1
-
+        flashes = 0
         change = True
         while change:
             change = False
@@ -37,12 +36,15 @@ class Grid:
                         self.flash(x, y)
                         cell.flashed = True
                         cell.val = 0
-                        self.flashes += 1
+                        flashes += 1
+        if clean:
+            self.clean()
+        return flashes
 
     def clean(self):
         for row in self.cells:
             for cell in row:
-                cell.flashed = False    
+                cell.flashed = False   
 
     def flash(self, x, y):        
         for _x in range(x - 1, x + 2):
@@ -67,35 +69,21 @@ def load_data() -> Grid:
     for row in data.splitlines():
         t = []
         for n in row:
-            t.append(Cell(val=int(n)))
+            t.append(Cell(int(n)))
         cells.append(t)
-    
+    cells = np.array(cells)
     return Grid(cells)
 
 def part1():
     grid = load_data()
-    for _ in range(100):
-        grid.step()
-        print(str(grid))
-        grid.clean()
-    print(f'part1: {grid.flashes}')
+    flashes = sum([grid.step() for _ in range(100)])
+    print(f'part1: {flashes}')
 
 def part2():
     grid = load_data()
-    i = 0
-    while True:
-        i += 1
-        grid.step()
-        grid.clean()
-        all_zero = True
-        for row in grid.cells:
-            for cell in row:
-                if cell.val != 0:
-                    all_zero = False
-                    break
-        if all_zero:
-            break   
-        
+    i = 1
+    while grid.step() != grid.SIZE ** 2:
+        i += 1        
     print(f'part2: {i}')
 
 if __name__  == '__main__':
