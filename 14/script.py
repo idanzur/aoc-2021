@@ -54,8 +54,8 @@ def part2():
         temp_res = {}
         for key in res:
             t1, t2= translate[key] 
-            temp_res[t1] = res[t1] + res[key]
-            temp_res[t2] = res[t2] + res[key]
+            temp_res[t1] = res.get(t1, 0) + res[key]
+            temp_res[t2] = res.get(t2, 0) + res[key]
         res = defaultdict(int, temp_res)
     
     pprint(temp_res)
