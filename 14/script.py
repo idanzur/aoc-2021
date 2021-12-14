@@ -2,8 +2,9 @@
 import re
 from collections import Counter
 from pprint import pprint
+import os
 
-file = './sample.txt' if 0 else './input.txt'
+file = './sample.txt' if 1 else './input.txt'
 
 def part1():
     with open(file) as f:
@@ -13,8 +14,7 @@ def part1():
     for row in data.split('\n'):
         rules.append(row.split(' -> '))
 
-    for _ in range(40):
-        print(i)
+    for _ in range(10):
         matches = []
         for pattern, val in rules:
             for match in re.finditer(f'(?={pattern})', template):
@@ -35,7 +35,21 @@ def part1():
 
 
 def part2():
-    pass
+    with open(file) as f:
+        data = f.read()
+    data = data.split('\n\n')[1]
+    dot = 'digraph {\n'
+    for row in data.split('\n'):
+        src, insert = row.split(' -> ')
+        new_1 = src[0] + insert
+        new_2 = insert + src[1]
+        dot += f'  {src} -> {{{new_1} {new_2}}}\n'
+    dot += '}'
+
+    with open('grath.dot', 'w') as f:
+        f.write(dot)
+    os.system("dot -Tpng grath.dot  > out.png")
+    
 
 if __name__  == '__main__':
-    part1()
+    part2()

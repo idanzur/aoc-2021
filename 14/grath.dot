@@ -1,0 +1,18 @@
+digraph {
+  CH -> {CB BH}
+  HH -> {HN NH}
+  CB -> {CH HB}
+  NH -> {NC CH}
+  HB -> {HC CB}
+  HC -> {HB BC}
+  HN -> {HC CN}
+  NN -> {NC CN}
+  BH -> {BH HH}
+  NC -> {NB BC}
+  NB -> {NB BB}
+  BN -> {BB BN}
+  BB -> {BN NB}
+  BC -> {BB BC}
+  CC -> {CN NC}
+  CN -> {CC CN}
+}
