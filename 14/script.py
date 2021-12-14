@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import re
-from collections import Counter
+from collections import Counter, defaultdict
 from pprint import pprint
 import os
 
@@ -37,18 +37,33 @@ def part1():
 def part2():
     with open(file) as f:
         data = f.read()
-    data = data.split('\n\n')[1]
-    dot = 'digraph {\n'
+    template, data = data.split('\n\n')
+    translate = {}
     for row in data.split('\n'):
         src, insert = row.split(' -> ')
         new_1 = src[0] + insert
         new_2 = insert + src[1]
-        dot += f'  {src} -> {{{new_1} {new_2}}}\n'
-    dot += '}'
+        translate[src] = [new_1, new_2]
+    
+    res = defaultdict(int)
+    for i in range(0, len(template), 2):
+        seg = template[i: i+2]
+        if seg in translate:
+            res[seg] += 1
+    for _ in range(10):
+        temp_res = {}
+        for key in res:
+            t1, t2= translate[key] 
+            temp_res[t1] = res[t1] + res[key]
+            temp_res[t2] = res[t2] + res[key]
+        res = defaultdict(int, temp_res)
+    
+    pprint(temp_res)
 
-    with open('grath.dot', 'w') as f:
-        f.write(dot)
-    os.system("dot -Tpng grath.dot  > out.png")
+
+    # with open('grath.dot', 'w') as f:
+    #     f.write(dot)
+    # os.system("dot -Tpng grath.dot  > out.png")
     
 
 if __name__  == '__main__':
