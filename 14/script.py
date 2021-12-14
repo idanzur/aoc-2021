@@ -13,7 +13,8 @@ def part1():
     for row in data.split('\n'):
         rules.append(row.split(' -> '))
 
-    for _ in range(10):
+    for _ in range(40):
+        print(i)
         matches = []
         for pattern, val in rules:
             for match in re.finditer(f'(?={pattern})', template):
