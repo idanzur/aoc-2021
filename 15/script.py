@@ -1,6 +1,8 @@
 #!/usr/bin/python3
 import sys
 from pprint import pprint
+from typing import List
+import heapq
 
 file = './sample.txt' if 0 else './input.txt'
 
@@ -65,21 +67,54 @@ def part1():
     print(f'part1: {res}')
 
 
+class Queue:
+    def __init__(self) -> None:
+        self.items = []
+
+    def add(self, item):
+        if item not in self.items:
+            heapq.heappush(self.items, item)
+
+    def pop(self):
+        return heapq.heappop(self.items)
+
+    def empty(self):
+        return len(self.items) == 0
+
+
+def get_neighbors(grid, x, y):
+    size = len(grid)
+    points = [(x-1, y), (x+1, y), (x, y-1), (x, y+1)]
+    return [(grid[j][i], i, j) for i, j in points if (0 <= i < size) and (0 <= j < size)]
+
+
+def dijkstra(grid):
+    size = len(grid)
+    to_visit = Queue()
+    to_visit.add((0, 0, 0))
+    visited = [[0 for _ in range(size)] for _ in range(size)]
+    costs = [[sys.maxsize for _ in range(size)] for _ in range(size)]
+    costs[0][0] = 0
+    while not to_visit.empty():
+        _, cur_x, cur_y = to_visit.pop()
+        visited[cur_y][cur_x] = 1
+        neighbors = get_neighbors(grid, cur_x, cur_y)
+        for n_w, n_x, n_y in neighbors:
+            if not visited[n_y][n_x]:
+                costs[n_y][n_x] = min(
+                    costs[n_y][n_x],
+                    costs[cur_y][cur_x] + n_w
+                )
+                to_visit.add((costs[n_y][n_x], n_x, n_y))
+
+    return costs[-1][-1]
+
+
 def part2():
     grid = load_data()
     grid = scale_grid(grid, 5)
-    # with open('./large_sample.txt') as f:
-    #     data = f.read()
-    # large = []
-    # for row in data.splitlines():
-    #     large.append([int(i) for i in row])
 
-    # for i in range(25):
-    #     for j in range(25):
-    #         print(int(grid[i][j] == large[i][j]), end=' ')
-    #     print()
-
-    res = calc_cost(grid)
+    res = dijkstra(grid)
     print(f'part2: {res}')
 
 
