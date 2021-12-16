@@ -70,13 +70,17 @@ def part1():
 class Queue:
     def __init__(self) -> None:
         self.items = []
+        self.unique = set()
 
     def add(self, item):
-        if item not in self.items:
+        if item not in self.unique:
             heapq.heappush(self.items, item)
+            self.unique.add(item)
 
     def pop(self):
-        return heapq.heappop(self.items)
+        item = heapq.heappop(self.items)
+        self.unique.remove(item)
+        return item
 
     def empty(self):
         return len(self.items) == 0

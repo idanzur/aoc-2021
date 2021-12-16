@@ -39,7 +39,7 @@ def part1():
             max_y = y
         points.append((x, y))
 
-    grid = [['.'] * (max_x + 1) for i in range(max_y+1)]
+    grid = [['.'] * (max_x + 1) for _ in range(max_y + 1)]
     for x, y in points:
         grid[y][x] = '#'
 
@@ -62,10 +62,13 @@ def part1():
     print('part2:')
     print_grid(grid)
 
+<<<<<<< HEAD
 
 def part2():
     pass
 
+=======
+>>>>>>> db7cb44f917921de16f1efa4d5a25b087dc0a1db
 
 if __name__ == '__main__':
     part1()
