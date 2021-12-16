@@ -1,10 +1,11 @@
 #!/usr/bin/python3
-import numpy as np
 
 file = './sample.txt' if 0 else './input.txt'
 
+
 def print_grid(grid):
     print('\n'.join([''.join(row) for row in grid]))
+
 
 def combine(arr1, arr2):
     for y, (row1, row2) in enumerate(zip(arr1, arr2)):
@@ -13,12 +14,14 @@ def combine(arr1, arr2):
                 arr1[y][x] = '#'
     return arr1
 
+
 def count_grid(grid):
     s = 0
     for row in grid:
         for cell in row:
             s += 1 if cell == '#' else 0
     return s
+
 
 def part1():
     with open(file) as f:
@@ -52,12 +55,13 @@ def part1():
             for row in grid:
                 a.append(row[:index])
                 b.append(row[index+1:][::-1])
-            
+
         grid = combine(a, b)
         if i == 0:
             print(f'part1: {count_grid(grid)}')
     print('part2:')
     print_grid(grid)
+
 
 def part2():
     pass

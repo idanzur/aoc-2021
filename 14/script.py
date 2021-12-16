@@ -50,15 +50,15 @@ def part2():
             res[seg] += 1
 
     for i in range(40):
-        temp_res = defaultdict(int)
+        new_res = defaultdict(int)
         for key, val in res.items():
             if val == 0:
                 continue
             t1, t2 = translate[key]
 
-            temp_res[t1] += val
-            temp_res[t2] += val
-        res = temp_res
+            new_res[t1] += val
+            new_res[t2] += val
+        res = new_res
 
     counter = defaultdict(int)
     for k, v in res.items():
@@ -69,7 +69,6 @@ def part2():
         vals.append(int(v/2+0.5))
 
     ans = max(vals) - min(vals)
-
     print(f'part2: {ans}')
 
 
