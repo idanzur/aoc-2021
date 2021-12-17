@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -xe
 
 mkdir $1
 cd $1
@@ -16,9 +16,11 @@ def part2():
 
 if __name__  == '__main__':
     part1()
+    # part2()
 EOF
 
-touch input.txt
+curl https://adventofcode.com/2021/day/$1/input -s --header "Cookie: session=$(cat ../session.txt)" -o input.txt
+truncate -s-1 input.txt 
 touch sample.txt
 
 code .
