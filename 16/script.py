@@ -95,7 +95,6 @@ def part2():
     root = parser.parse()
     res = calc(root)
     print(f'part2: {res}')
-    print(parser.buffer)
 
 
 if __name__ == '__main__':
