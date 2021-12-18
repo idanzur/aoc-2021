@@ -26,11 +26,10 @@ class Reducer:
             if left_path := self.find_near_number(1):
                 self.add_at(left_path, left_item)
             self.modify_at(self.path, 0)
-
         return bool(self.path)
 
     def find_explode(self, number, n, path):
-        if type(number[0]) is int and type(number[1]) is int:
+        if isinstance(number[0], int) and isinstance(number[1], int):
             if n == 4:
                 self.found = True
                 self.path = path
@@ -38,7 +37,7 @@ class Reducer:
         for i, item in enumerate(number):
             if self.found:
                 return
-            if type(item) is list:
+            if isinstance(item, list):
                 self.find_explode(item, n + 1, path + [i])
 
     def find_near_number(self, dir):
@@ -48,11 +47,9 @@ class Reducer:
             return
         last_pos = len(path) - path[::-1].index(dir) - 1
         start_path = path[: last_pos] + [1-dir]
-
         temp = self.get_at(start_path)
-
         while temp != []:
-            if type(temp) is int:
+            if isinstance(temp, int):
                 return start_path
             start_path.append(dir)
             temp = temp[dir]
@@ -68,7 +65,7 @@ class Reducer:
         for i, item in enumerate(number):
             if self.found:
                 return
-            if type(item) is list:
+            if isinstance(item, list):
                 self.find_split(item, path + [i])
             elif item >= 10:
                 self.found = True
@@ -103,10 +100,10 @@ def load_data():
 
 def part1():
     rows = load_data()
-    start = rows[0]
-    for row in rows[1:]:
-        start = Reducer([start, row]).reduce()
-    ans = magnitude(start)
+    res = rows[0]
+    for num in rows[1:]:
+        res = Reducer([res, num]).reduce()
+    ans = magnitude(res)
     print(f'part1: {ans}')
 
 
