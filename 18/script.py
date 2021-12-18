@@ -13,19 +13,17 @@ class Reducer:
 
     def reduce(self):
         while self.explode() or self.split():
-            self.found = False
             self.path = None
+            self.found = False
         return self.number
 
     def explode(self):
         self.find_explode(self.number, 0, [])
         if self.path:
             left_item, right_item = self.get_at(self.path)
-            right_path = self.find_near_number(0)
-            if right_path:
+            if right_path := self.find_near_number(0):
                 self.add_at(right_path, right_item)
-            left_path = self.find_near_number(1)
-            if left_path:
+            if left_path := self.find_near_number(1):
                 self.add_at(left_path, left_item)
             self.modify_at(self.path, 0)
 
@@ -38,7 +36,8 @@ class Reducer:
                 self.path = path
             return
         for i, item in enumerate(number):
-            if self.found: return
+            if self.found:
+                return
             if type(item) is list:
                 self.find_explode(item, n + 1, path + [i])
 
@@ -67,7 +66,8 @@ class Reducer:
 
     def find_split(self, number, path):
         for i, item in enumerate(number):
-            if self.found: return
+            if self.found:
+                return
             if type(item) is list:
                 self.find_split(item, path + [i])
             elif item >= 10:
@@ -89,10 +89,10 @@ class Reducer:
         return temp
 
 
-def magnitude(query):
-    if type(query) is int:
-        return query
-    return 3 * magnitude(query[0]) + 2 * magnitude(query[1])
+def magnitude(number):
+    if type(number) is int:
+        return number
+    return 3 * magnitude(number[0]) + 2 * magnitude(number[1])
 
 
 def load_data():
