@@ -1,15 +1,13 @@
 #!/usr/bin/python3
-from typing import List, Dict, Tuple, TypeVar
-from math import comb, pow, sqrt
-from pprint import pprint
-from collections import Counter
-from itertools import permutations
+from typing import List
+from math import pow
+from itertools import permutations, combinations
 
-file = './sample.txt' if 1 else './input.txt'
+file = './sample.txt' if 0 else './input.txt'
 
 
 def distance(p1: tuple, p2: tuple) -> float:
-    return sqrt(sum([pow(a-b, 2) for a, b in zip(p1, p2)]))
+    return sum([pow(a-b, 2) for a, b in zip(p1, p2)])
 
 
 def get_distances(scanner: List[tuple]) -> dict:
@@ -29,33 +27,6 @@ def intersect_distances(d1: dict, d2: dict):
     return res
 
 
-def diff(p1, p2):
-    return [a-b for a, b in zip(p1, p2)]
-
-
-def transform(p):
-    options = []
-    for x, y, z in permutations(p):
-        for i in range(8):
-            if i & 1:
-                x = -x
-            if i & 2:
-                y = -y
-            if i & 4:
-                z = -z
-            options.append((x, y, z))
-    return options
-
-
-def combine(inter):
-    (p1, p2), (p3, p4) = inter
-    diff_a = diff(p1, p2)
-    # diff_b = diff(p2, p3)
-    # print(diff_a, diff_b)
-    for opt3, opt4 in zip(transform(p3), transform(p4)):
-        print(diff_a == diff(opt4, opt3))
-
-
 def gen_views():
     options = []
     for x, y, z in permutations([0, 1, 2]):
@@ -70,6 +41,7 @@ def gen_views():
             options.append([(x, y, z), t])
     return options
 
+
 def translate_point(point, view):
     pos, dir = view
     x = point[pos[0]] * dir[0]
@@ -77,15 +49,47 @@ def translate_point(point, view):
     z = point[pos[2]] * dir[2]
     return (x, y, z)
 
+
 def translate_scanner(s, view):
     return [translate_point(p, view) for p in s]
 
 
+def move_scanner(s, diff):
+    return [tuple([p_+d_ for p_, d_ in zip(p, diff)]) for p in s]
 
-def try_combine(s1, s2):
+
+def try_combine(s1, s2, p1, p2s):
     views = gen_views()
+    _s1 = set(s1)
     for view in views:
-        
+        _s2 = translate_scanner(s2, view)
+        for p2 in p2s:
+            p2 = translate_point(p2, view)
+            diff = tuple([p_-d_ for p_, d_ in zip(p1, p2)])
+            __s2 = move_scanner(_s2, diff)
+            ans = len(_s1 & set(__s2))
+            if ans >= 12:
+                return __s2
+
+    return False
+
+
+def combine(scanners, distances):
+    for d1, d2 in combinations(distances, 2):
+        i1 = distances.index(d1)
+        i2 = distances.index(d2)
+        intersect = intersect_distances(d1, d2)
+        if len(intersect) >= 66:
+            for inter in intersect:
+                res = try_combine(
+                    scanners[i1], scanners[i2], inter[0][0], inter[1])
+                if res:
+                    scanners[i1] = list(set(res) | set(scanners[i1]))
+                    distances[i1] = d1 | get_distances(res)
+                    scanners.pop(i2)
+                    distances.pop(i2)
+                    return scanners, distances
+
 
 def part1():
     with open(file) as f:
@@ -97,25 +101,12 @@ def part1():
             points.append(tuple(map(int, row.split(','))))
         scanners.append(points)
 
-    s0 = scanners[0]
-    for s in scanners[1:]:
-        try_combine(s0, s)
+    distances = [get_distances(s) for s in scanners]
+    while len(scanners) > 1:
+        scanners, distances = combine(scanners, distances)
 
-    # distances = [get_distances(s) for s in scanners]
-    # d_start = distances[0]
-    # for i, d in enumerate(distances[1:]):
-    #     intersections = intersect_distances(d_start, d)
-    #     if len(intersections) >= 66:
-    #         print(combine(intersections[0]))
-    # all_inter = set()
-    # for i, d1 in enumerate(distances):
-    #     for j, d2 in enumerate(distances):
-    #         if i != j:
-    #             intersections = intersect_distances(d1, d2)
-    #             if len(intersections) >= 66:
-    #                 all_inter.add(tuple(sorted([i, j])))
-
-    # pprint(len(all_inter))
+    ans = len(scanners[0])
+    print(f'part1: {ans}')
 
 
 def part2():
