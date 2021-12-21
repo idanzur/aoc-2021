@@ -69,9 +69,9 @@ def try_combine(s1, s2, p1, p2s):
             __s2 = move_scanner(_s2, diff)
             ans = len(_s1 & set(__s2))
             if ans >= 12:
-                return __s2
+                return __s2, diff
 
-    return False
+    return False, False
 
 
 def combine(scanners, distances):
@@ -81,14 +81,14 @@ def combine(scanners, distances):
         intersect = intersect_distances(d1, d2)
         if len(intersect) >= 66:
             for inter in intersect:
-                res = try_combine(
+                res, diff = try_combine(
                     scanners[i1], scanners[i2], inter[0][0], inter[1])
                 if res:
                     scanners[i1] = list(set(res) | set(scanners[i1]))
                     distances[i1] = d1 | get_distances(res)
                     scanners.pop(i2)
                     distances.pop(i2)
-                    return scanners, distances
+                    return scanners, distances, diff
 
 
 def part1():
@@ -102,17 +102,24 @@ def part1():
         scanners.append(points)
 
     distances = [get_distances(s) for s in scanners]
+    positions = [(0, 0, 0)]
     while len(scanners) > 1:
-        scanners, distances = combine(scanners, distances)
+        scanners, distances, diff = combine(scanners, distances)
+        positions.append(diff)
 
     ans = len(scanners[0])
     print(f'part1: {ans}')
 
+    max_diff = 0
+    for p1, p2 in combinations(positions, 2):
+        diff = sum([abs(i-j) for i, j in zip(p1, p2)])
+        max_diff = max(max_diff, diff)
 
-def part2():
-    pass
+    print(f'part2: {max_diff}')
+
+
+
 
 
 if __name__ == '__main__':
     part1()
-    # part2()
