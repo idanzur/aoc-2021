@@ -55,26 +55,25 @@ def translate_scanner(s, view):
 
 
 def move_scanner(s, diff):
-    return [tuple([p_+d_ for p_, d_ in zip(p, diff)]) for p in s]
+    return set([tuple([p_+d_ for p_, d_ in zip(p, diff)]) for p in s])
 
 
 def try_combine(s1, s2, p1, p2s):
     views = gen_views()
-    _s1 = set(s1)
     for view in views:
         _s2 = translate_scanner(s2, view)
         for p2 in p2s:
             p2 = translate_point(p2, view)
             diff = tuple([p_-d_ for p_, d_ in zip(p1, p2)])
             __s2 = move_scanner(_s2, diff)
-            ans = len(_s1 & set(__s2))
+            ans = len(s1 & __s2)
             if ans >= 12:
                 return __s2, diff
 
     return False, False
 
 
-def combine(scanners, distances):
+def combine(scanners: list, distances: list):
     for d1, d2 in combinations(distances, 2):
         i1 = distances.index(d1)
         i2 = distances.index(d2)
@@ -84,7 +83,7 @@ def combine(scanners, distances):
                 res, diff = try_combine(
                     scanners[i1], scanners[i2], inter[0][0], inter[1])
                 if res:
-                    scanners[i1] = list(set(res) | set(scanners[i1]))
+                    scanners[i1] = res | scanners[i1]
                     distances[i1] = d1 | get_distances(res)
                     scanners.pop(i2)
                     distances.pop(i2)
@@ -96,9 +95,9 @@ def part1():
         data = f.read()
     scanners = []
     for chunck in data.split('\n\n'):
-        points = []
+        points = set()
         for row in chunck.splitlines()[1:]:
-            points.append(tuple(map(int, row.split(','))))
+            points.add(tuple(map(int, row.split(','))))
         scanners.append(points)
 
     distances = [get_distances(s) for s in scanners]
@@ -116,9 +115,6 @@ def part1():
         max_diff = max(max_diff, diff)
 
     print(f'part2: {max_diff}')
-
-
-
 
 
 if __name__ == '__main__':
